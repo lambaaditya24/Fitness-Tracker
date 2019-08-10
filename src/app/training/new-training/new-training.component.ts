@@ -3,6 +3,7 @@ import { Excercise } from "../training/excercise.model";
 import { TrainingService } from "../training/trainig.service";
 import { NgForm } from "@angular/forms";
 import { Observable, Subscription } from "rxjs";
+import { UIService } from 'src/app/auth/ui.service';
 
 @Component({
   selector: "app-new-training",
@@ -10,16 +11,22 @@ import { Observable, Subscription } from "rxjs";
   styleUrls: ["./new-training.component.css"]
 })
 export class NewTrainingComponent implements OnInit,OnDestroy {
+  trainingfetched:boolean=false;
   Training: Excercise[];
-  excerciseChange:Subscription
+  excerciseChange:Subscription;
+  trainingFetch:Subscription;
   constructor(
-    private trainingService: TrainingService,
+    private trainingService: TrainingService,private uiservice:UIService
   ) {}
 
   ngOnInit() {
+    this.trainingFetch = this.uiservice.trainingfetched.subscribe(value=>{
+      this.trainingfetched = value
+    })
 
    this.excerciseChange = this.trainingService.excerciseChanged.subscribe(excercise=>{
      this.Training = excercise
+     this.uiservice.trainingfetched.next(false);
    })
    this.trainingService.fetchavailableExcercise()
       
@@ -30,7 +37,8 @@ export class NewTrainingComponent implements OnInit,OnDestroy {
   }
 
   ngOnDestroy(){
-    this.excerciseChange.unsubscribe()
+    this.excerciseChange.unsubscribe();
+    this.trainingFetch.unsubscribe();
   }
 }
 

@@ -4,11 +4,17 @@ import { Subject } from "rxjs/Subject";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { AngularFireAuth } from "@angular/fire/auth";
-import { TrainingService } from '../training/training/trainig.service';
+import { TrainingService } from "../training/training/trainig.service";
+import { UIService } from "./ui.service";
 
 @Injectable()
 export class AuthService {
-  constructor(private router: Router, private afAuth: AngularFireAuth,private trainingService:TrainingService) {}
+  constructor(
+    private router: Router,
+    private afAuth: AngularFireAuth,
+    private trainingService: TrainingService,
+    public uiservice: UIService
+  ) {}
   authChange = new Subject<boolean>();
   isAuthenticated: boolean = false;
   private user: UserData;
@@ -28,24 +34,34 @@ export class AuthService {
   }
 
   registerUser(authData: AuthData) {
+    this.uiservice.authChanged.next(true);
     this.afAuth.auth
       .createUserWithEmailAndPassword(authData.email, authData.password)
       .then(result => {
-        console.log("registered successfully");
+        this.uiservice.openSnackbar("User created Successfully", null, 3000);
+        this.uiservice.authChanged.next(false);
       })
       .catch(error => {
-        console.log("error registering");
+        this.uiservice.openSnackbar(error.message, null, 3000);
+        this.uiservice.authChanged.next(false);
       });
   }
 
   login(authData: AuthData) {
+    this.uiservice.authChanged.next(true);
     this.afAuth.auth
       .signInWithEmailAndPassword(authData.email, authData.password)
       .then(result => {
-        console.log("login success");
+        this.uiservice.openSnackbar(
+          "Welcome to Ng Fitness Tracker",
+          null,
+          3000
+        );
+        this.uiservice.authChanged.next(false);
       })
       .catch(error => {
-        console.log("login error");
+        this.uiservice.openSnackbar(error.message, null, 3000);
+        this.uiservice.authChanged.next(false);
       });
   }
 

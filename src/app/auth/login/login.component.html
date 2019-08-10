@@ -8,6 +8,7 @@
         <input matInput type="password" name="password" placeholder="Password" ngModel required>
       <mat-error>Please input correct password</mat-error>
     </mat-form-field>
-    <button mat-raised-button color="primary" type="submit" [disabled]="f.invalid">Login</button>
+    <button mat-raised-button color="primary" *ngIf="!showprogressbar" type="submit" [disabled]="f.invalid">Login</button>
+    <mat-progress-bar mode="indeterminate" *ngIf="showprogressbar"></mat-progress-bar>
   </form> 
 </section>

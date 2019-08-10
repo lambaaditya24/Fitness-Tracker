@@ -16,6 +16,8 @@
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
     <mat-checkbox required ngModel name="agree">Want to train</mat-checkbox>
-    <button mat-raised-button color="primary" [disabled]="f.invalid">Submit</button>
+    <button mat-raised-button color="primary" *ngIf="!showprogressbar" [disabled]="f.invalid">Submit</button>
+    <span>Already a member <a routerLink='/login'>Log In</a></span>
+    <mat-progress-bar mode="indeterminate" *ngIf="showprogressbar"></mat-progress-bar>    
   </form>
 </section>

@@ -3,10 +3,11 @@ import { Subject, Subscription } from "rxjs";
 import { AngularFirestore } from "@angular/fire/firestore";
 import { map } from "rxjs/operators";
 import { Injectable } from '@angular/core';
+import { UIService } from 'src/app/auth/ui.service';
 
 @Injectable()
 export class TrainingService {
-  constructor(private db:AngularFirestore){}
+  constructor(private db:AngularFirestore,private uiservice:UIService){}
 
   currentExcercise = new Subject<Excercise>();//sending subject to post training for showing post excercises
   pastExcercises = new Subject<Excercise[]>();
@@ -24,6 +25,7 @@ export class TrainingService {
   }
 
   fetchavailableExcercise(){
+    this.uiservice.trainingfetched.next(true);
     this.ftSubs.push(this.db
     .collection("availableExcercises")
     .snapshotChanges()
